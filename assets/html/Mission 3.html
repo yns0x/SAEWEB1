@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mission.css">
+    <link rel="icon" href="../img/favicon.jpg">
+    <title>Rapport SAE-Web – Mission 3</title>
+</head>
+<body>
+<header class="navigation">
+    <h1>Rapport Web De SAE</h1>
+    <nav class="boutons">
+        <a href="../../index.html">Acceuil</a>
+        <a href="./Mission%201.html">Mission 1</a>
+        <a href="./Mission%202.html">Mission 2</a>
+        <a id="actif" href="./Mission%203.html">Mission 3</a>
+        <a href="./Conclusion.html">Conclusion</a>
+    </nav>
+</header>
+
+<main>
+    <h2 id="titre">Mission 3 : Analyse de la base KDou (nouvelle version)</h2>
+
+    <!-- I. Contexte de la mission -->
+    <div class="rapport">
+        <h3>I) Contexte et objectifs de la mission 3</h3>
+        <p>
+            Cette mission consiste à exploiter la <strong>nouvelle version</strong> de la base de données KDou,
+            dans laquelle ont été ajoutés de nouveaux champs stratégiques :
+        </p>
+        <ul>
+            <li>Informations sur les <strong>pays</strong> (UE / Hors UE, devise…)</li>
+            <li>Coût d’achat des produits et <strong>coefficient de marge</strong> par catégorie</li>
+            <li>Relations spéciales entre clients (<strong>clients pilotes</strong> et <strong>clients partenaires</strong>)</li>
+        </ul>
+        <p>
+            L’objectif est de construire des <strong>indicateurs de pilotage</strong> utiles pour KDou
+            afin de mieux analyser son chiffre d’affaires, optimiser le catalogue et vérifier la
+            cohérence de ses relations commerciales.
+        </p>
+    </div>
+
+    <!-- II. Requêtes imposées -->
+    <div class="rapport">
+        <h3>II) Requêtes imposées</h3>
+
+        <!-- 1) CA Desserts + Boissons -->
+        <div class="question">
+            <h4>1) Chiffre d’affaires des desserts et boissons par année</h4>
+            <p><strong>Énoncé :</strong> Calculer, pour chaque année, le chiffre d’affaires généré par les catégories <em>Boissons</em> et <em>Desserts</em>.</p>
+            <p>
+                <strong>Construction :</strong> On utilise le <strong>coût d’achat</strong> du produit, le
+                <strong>coefficient de marge</strong> de la catégorie, la <strong>quantité commandée</strong> et la
+                <strong>remise</strong> pour obtenir le chiffre d’affaires. On ne garde que les lignes dont la
+                catégorie contient “dessert” ou “boissons” puis on groupe par année de commande.
+            </p>
+            <p><strong>Requête SQL :</strong></p>
+            <code>
+                SELECT
+                SUM(
+                P.CoutAchat * CA.CoefMarge * DE.Quantité * (1 - DE.[Remise (%)])
+                ) AS ChiffreAffaire,
+                Year(C.DateCde) AS Annee
+                FROM
+                (
+                (Categorie AS CA
+                INNER JOIN Produit AS P ON CA.CodeCateg = P.CodeCateg)
+                INNER JOIN DetailCommande AS DE ON P.RefProd = DE.[Réf produit]
+                )
+                INNER JOIN Commande AS C ON C.[N° commande] = DE.[N° commande]
+                WHERE
+                CA.NomCateg LIKE "*boissons*"
+                OR CA.NomCateg LIKE "*dessert*"
+                GROUP BY
+                Year(C.DateCde);
+            </code>
+            <p>
+                <strong>Résultat :</strong> On obtient, pour chaque année, le chiffre d’affaires réalisé
+                avec les desserts et boissons. KDou peut ainsi suivre l’évolution de ces ventes
+                et repérer les années les plus rentables.
+            </p>
+        </div>
+
+        <!-- 2) Produits carnés non commandés -->
+        <div class="question">
+            <h4>2) Nombre de produits carnés non commandés</h4>
+            <p><strong>Énoncé :</strong> Déterminer quels produits <em>carnés</em> (viande / poisson) n’ont jamais été commandés.</p>
+            <p>
+                <strong>Construction :</strong> On considère comme “carnés” les produits dont la catégorie
+                contient <em>Viande</em> ou <em>Poisson</em>. Un produit est “non commandé” s’il n’apparaît
+                dans aucune ligne de <code>DetailCommande</code>. On utilise donc un <strong>LEFT JOIN</strong>
+                de <code>Produit</code> vers <code>DetailCommande</code> et on cherche les lignes où le
+                numéro de commande est <code>NULL</code>.
+            </p>
+            <p><strong>Requête SQL :</strong></p>
+            <code>
+                SELECT
+                P.NomProd AS Nom
+                FROM
+                (
+                (Produit AS P
+                INNER JOIN Categorie AS C ON P.CodeCateg = C.CodeCateg)
+                LEFT JOIN DetailCommande AS D ON P.RefProd = D.[Réf produit]
+                )
+                WHERE
+                (
+                C.NomCateg LIKE "*Viande*"
+                OR C.NomCateg LIKE "*Poisson*"
+                )
+                AND D.[N° commande] IS NULL
+                ORDER BY
+                1;
+            </code>
+            <p>
+                <strong>Résultat :</strong> La requête liste les produits carnés jamais commandés.
+                Cela permet à KDou d’identifier les références à faible intérêt commercial et de
+                réfléchir à une suppression ou substitution.
+            </p>
+        </div>
+
+        <!-- 3) CA hors UE -->
+        <div class="question">
+            <h4>3) Chiffre d’affaires avec les fournisseurs hors UE</h4>
+            <p><strong>Énoncé :</strong> « Quel CA total a été généré à ce jour avec les fournisseurs hors UE ? »</p>
+            <p>
+                <strong>Construction :</strong> On ne garde que les fournisseurs dont le pays est marqué
+                <strong>"Hors"</strong> dans le champ <code>UE</code>. On recalcule le chiffre d’affaires comme précédemment
+                et on groupe par pays et devise pour voir la contribution de chaque zone.
+            </p>
+            <p><strong>Requête SQL :</strong></p>
+            <code>
+                SELECT
+                Pays.PaysFR,
+                SUM(
+                P.CoutAchat * Categ.CoefMarge * DE.Quantité * (1 - DE.[Remise (%)])
+                ) AS ChiffreAffaire,
+                Pays.Devise,
+                COUNT(DE.[N° commande]) AS NbCommandes
+                FROM
+                (
+                (
+                (
+                Pays
+                INNER JOIN Fournisseur ON Pays.NoPays = Fournisseur.NoPays
+                )
+                INNER JOIN Produit AS P ON Fournisseur.NoFour = P.NoFour
+                )
+                INNER JOIN Categorie AS Categ ON P.CodeCateg = Categ.CodeCateg
+                )
+                INNER JOIN DetailCommande AS DE ON P.RefProd = DE.[Réf produit]
+                WHERE
+                Pays.UE = "Hors"
+                GROUP BY
+                Pays.PaysFR,
+                Pays.Devise
+                ORDER BY
+                1 DESC;
+            </code>
+            <p>
+                <strong>Résultat :</strong> La requête donne, par pays hors UE, le chiffre d’affaires,
+                la devise utilisée et le nombre de commandes. KDou peut ainsi évaluer la
+                rentabilité de ses importations extra-européennes.
+            </p>
+        </div>
+
+        <!-- 4) Pilotes / partenaires -->
+        <div class="question">
+            <h4>4) Comparaison clients pilotes / clients partenaires</h4>
+            <p><strong>Énoncé :</strong> « Y a-t-il des clients pilotes ayant autant de commandes que leurs clients partenaires ? »</p>
+            <p>
+                <strong>Construction :</strong> Un client pilote est identifié par son code, repris dans
+                le champ <code>CodeCliPart</code> des clients partenaires. On calcule d’abord le nombre
+                de commandes par client, puis on compare pour chaque couple
+                <em>(pilote, partenaire)</em> le volume de commandes, en ne gardant que les cas où
+                les deux ont le même nombre.
+            </p>
+            <p><strong>Requête SQL :</strong></p>
+            <code>
+                SELECT
+                Pilote.CodeCli AS CodePilote,
+                Pilote.Societe AS SocietePilote,
+                CmdPilote.NbCmd AS CommandesPilote,
+                Partenaire.CodeCli AS CodePartenaire,
+                Partenaire.Societe AS SocietePartenaire,
+                CmdPart.NbCmd AS CommandesPartenaire
+                FROM
+                (
+                (
+                Clientele AS Partenaire
+                INNER JOIN Clientele AS Pilote
+                ON Partenaire.CodeCliPart = Pilote.CodeCli
+                )
+                LEFT JOIN (
+                SELECT
+                CodeCli,
+                COUNT(*) AS NbCmd
+                FROM
+                Commande
+                GROUP BY
+                CodeCli
+                ) AS CmdPilote ON Pilote.CodeCli = CmdPilote.CodeCli
+                )
+                LEFT JOIN (
+                SELECT
+                CodeCli,
+                COUNT(*) AS NbCmd
+                FROM
+                Commande
+                GROUP BY
+                CodeCli
+                ) AS CmdPart ON Partenaire.CodeCli = CmdPart.CodeCli
+                WHERE
+                CmdPilote.NbCmd = CmdPart.NbCmd;
+            </code>
+            <p>
+                <strong>Résultat :</strong> On obtient la liste des couples pilote/partenaire avec le
+                même nombre de commandes. KDou peut vérifier si le réseau de pilotes joue
+                bien son rôle ou si certains partenariats doivent être ajustés.
+            </p>
+        </div>
+    </div>
+
+    <!-- III. Indicateurs proposés par l'équipe -->
+    <div class="rapport">
+        <h3>III) Indicateurs proposés par l’équipe</h3>
+        <p>
+            Chaque membre du groupe a proposé un indicateur supplémentaire à partir de la base
+            enrichie, afin d’aider la société KDou à mieux piloter son activité.
+        </p>
+
+        <!-- A. Younes -->
+        <div class="question">
+            <h4>A) Neche Younes – Clients qui commandent le plus</h4>
+            <p><strong>Énoncé :</strong> Identifier les clients qui passent le plus grand nombre de commandes.</p>
+            <p>
+                <strong>Intérêt pour KDou :</strong> repérer les <strong>clients à forte valeur</strong>, optimiser
+                les remises de fidélité, les offres promotionnelles et mieux prévoir la demande
+                en analysant les habitudes de commande.
+            </p>
+            <p><strong>Requête SQL :</strong></p>
+            <code>
+                SELECT
+                Clientele.Societe,
+                COUNT(Commande.[N° commande]) AS NbCommandes
+                FROM
+                Clientele
+                INNER JOIN Commande ON Clientele.CodeCli = Commande.CodeCli
+                GROUP BY
+                Clientele.Societe
+                ORDER BY
+                2 DESC;
+            </code>
+            <p>
+                <strong>Résultat :</strong> La requête met en avant les clients les plus actifs.
+                KDou peut concentrer ses efforts commerciaux sur ces clients stratégiques.
+            </p>
+        </div>
+
+        <!-- B. Brahim -->
+        <div class="question">
+            <h4>B) Chabbi Brahim – Nombre de produits par fournisseur</h4>
+            <p><strong>Énoncé :</strong> Compter, pour chaque fournisseur, le nombre de références produits au catalogue.</p>
+            <p>
+                <strong>Intérêt pour KDou :</strong> identifier les <strong>fournisseurs clés</strong> (offre large)
+                et ceux qui sont peu représentés, pour décider d’éventuels partenariats,
+                renégociations ou diversifications.
+            </p>
+            <p><strong>Requête SQL :</strong></p>
+            <code>
+                SELECT
+                Fournisseur.Societe,
+                Count(Produit.RefProd) AS NombreProduits
+                FROM
+                Fournisseur
+                LEFT JOIN Produit ON Fournisseur.NoFour = Produit.NoFour
+                GROUP BY
+                Fournisseur.Societe
+                ORDER BY
+                Count(Produit.RefProd) DESC;
+            </code>
+            <p>
+                <strong>Résultat :</strong> Tous les fournisseurs apparaissent, même sans produit
+                (grâce au <code>LEFT JOIN</code>). On visualise rapidement les acteurs majeurs du
+                catalogue de KDou.
+            </p>
+        </div>
+
+        <!-- C. Kapusta -->
+        <div class="question">
+            <h4>C) Kapusta Alexandre – Nombre de produits par pays d’origine</h4>
+            <p><strong>Énoncé :</strong> Compter le nombre de références produits associées à chaque pays fournisseur.</p>
+            <p>
+                <strong>Intérêt pour KDou :</strong> suivre la <strong>répartition géographique</strong> de l’offre,
+                mesurer la diversification des approvisionnements et réfléchir à l’impact
+                environnemental des transports.
+            </p>
+            <p><strong>Requête SQL :</strong></p>
+            <code>
+                SELECT
+                Pays.PaysFR,
+                Count(Produit.RefProd) AS NombreProduits
+                FROM
+                (
+                Produit
+                INNER JOIN Fournisseur ON Produit.NoFour = Fournisseur.NoFour
+                )
+                INNER JOIN Pays ON Fournisseur.NoPays = Pays.NoPays
+                GROUP BY
+                Pays.PaysFR
+                ORDER BY
+                Count(Produit.RefProd) DESC;
+            </code>
+            <p>
+                <strong>Résultat :</strong> Les pays les plus représentés dans le catalogue sont
+                mis en évidence. KDou peut négocier différemment selon les zones ou renforcer
+                la diversité de certains pays sous-représentés.
+            </p>
+        </div>
+
+        <!-- D. Mohamed -->
+        <div class="question">
+            <h4>D) Toumi Mohamed – Total des ventes par produit (Desserts et Boissons)</h4>
+            <p><strong>Énoncé :</strong> Mesurer, pour chaque produit des catégories <em>Desserts</em> et <em>Boissons</em>, la quantité totale vendue.</p>
+            <p>
+                <strong>Intérêt pour KDou :</strong> mettre en évidence les meilleures ventes et les
+                produits en difficulté dans ces catégories, afin d’ajuster l’offre, cibler les
+                promotions et envisager le remplacement des produits les moins vendus.
+            </p>
+            <p><strong>Requête SQL :</strong></p>
+            <code>
+                SELECT
+                Categorie.NomCateg,
+                Produit.NomProd,
+                Sum(DetailCommande.[Quantité]) AS TotalVentes
+                FROM
+                (
+                Categorie
+                INNER JOIN Produit ON Categorie.CodeCateg = Produit.CodeCateg
+                )
+                INNER JOIN DetailCommande ON Produit.RefProd = DetailCommande.[Réf produit]
+                WHERE
+                Categorie.NomCateg IN ('Desserts', 'Boissons')
+                GROUP BY
+                Categorie.NomCateg,
+                Produit.NomProd
+                ORDER BY
+                Sum(DetailCommande.[Quantité]) DESC;
+            </code>
+            <p>
+                <strong>Résultat :</strong> Le tri décroissant fait apparaître immédiatement les
+                produits les plus demandés. KDou peut y associer des remises, et réfléchir au
+                remplacement des produits très peu vendus.
+            </p>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>SAÉ 1.04 WEB - Groupe Y.M.A.B. - 2025</p>
+</footer>
+</body>
+</html>

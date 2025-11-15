@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mission.css">
+    <link rel="icon" href="../img/favicon.jpg">
+    <title>Rapport SAE-Web</title>
+</head>
+<body>
+
+    <header class="navigation">
+        <h1>Rapport Web De SAE</h1>
+        <nav class="boutons">
+            <a  href="../../index.html">Acceuil</a>
+            <a id="actif" href="#">Mission 1</a>
+            <a  href="Mission%202.html">Mission 2</a>
+            <a  href="Mission%203.html">Mission 3</a>
+            <a  href="Conclusion.html">Conclusion</a>
+        </nav>
+    </header>
+    <main>
+        <h2 id="titre">Mission 1 : Analyse et Exploration</h2>
+
+        <div class="rapport">
+            <h3>1. Analyse de la Structure de la Base de Données</h3>
+
+            <h4>Tableau de Synthèse des Clés</h4>
+            <table class="container">
+                <thead>
+                    <tr>
+                        <th>Table</th>
+                        <th>Clé Primaire</th>
+                        <th>Clé(s) Candidate(s)</th>
+                        <th>Clés Étrangères</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>FOURNISSEUR</strong></td>
+                        <td>N°Fournisseur</td>
+                        <td>Aucun</td>
+                        <td>Aucun</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PRODUIT</strong></td>
+                        <td>Réf produit</td>
+                        <td>Aucun</td>
+                        <td>Code catégorie, N° fournisseur</td>
+                    </tr>
+                    <tr>
+                        <td><strong>CATEGORIE</strong></td>
+                        <td>Code catégorie</td>
+                        <td>Nom de catégorie</td>
+                        <td>Aucun</td>
+                    </tr>
+                    <tr>
+                        <td><strong>CLIENTELE</strong></td>
+                        <td>Code client</td>
+                        <td>MailCli</td>
+                        <td>Aucun</td>
+                    </tr>
+                    <tr>
+                        <td><strong>COMMANDE</strong></td>
+                        <td>N° commande</td>
+                        <td>Aucun</td>
+                        <td>Code client</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DETAILCOMMANDE</strong></td>
+                        <td>(N° commande, Réf produit)</td>
+                        <td>Aucun</td>
+                        <td>Réf produit, N° commande</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>Analyse détaillée des tables</h4>
+            <p>Voici l'utilité identifiée pour chaque table de la base KDou :</p>
+
+            <table class="container">
+                <thead>
+                    <tr>
+                        <th>Table</th>
+                        <th>Rôle et Utilité pour KDou</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>FOURNISSEUR</strong></td>
+                        <td>Permet de gérer les informations des partenaires
+                            (Société, Contact, Adresse) pour la logistique et les
+                            réapprovisionnements.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>CATEGORIE</strong></td>
+                        <td>Sert à classer les produits (Nom, Description, Marge)
+                            pour analyser la rentabilité par famille d'articles.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>CLIENTELE</strong></td>
+                        <td>Centralise les données clients (Code, Contact, Livraison)
+                            pour le suivi des commandes et la communication.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PRODUIT</strong></td>
+                        <td>Catalogue des articles (Prix, Stock, Fournisseur)
+                            essentiel pour la gestion des stocks et des marges.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>COMMANDE</strong></td>
+                        <td>Enregistre les transactions (Dates, Frais de port)
+                            pour le suivi chronologique des ventes et la logistique.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DETAILCOMMANDE</strong></td>
+                        <td>Lie les produits aux commandes (Quantité,
+                            Remise) pour la facturation précise.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="rapport">
+            <h3>2. Navigation et Exploration des Données</h3>
+
+            <div class="question">
+                <h4>a. Combien y a-t-il de clients parisiens ?</h4>
+                <p><strong>Procédé :</strong> Utilisation de la formule <code>=NB.SI(E:E; "Paris")</code> dans la table CLIENTELE.</p>
+                <p><strong>Résultat : </strong>5</p>
+                <p><strong>Difficultés : </strong>Aucune, mais risque d'erreur si "Paris" est mal orthographié.</p>
+            </div>
+
+            <div class="question">
+                <h4>b. Combien y a-t-il de clients bisontins ?</h4>
+                <p><strong>Procédé :</strong> Utilisation de la formule <code>=NB.SI(E:E; "Besancon")</code>.</p>
+                <p><strong>Résultat :</strong> 1</p>
+                <p><strong>Difficultés :</strong> Orthographe de la ville (Besançon vs Besancon).</p>
+            </div>
+
+            <div class="question">
+                <h4>c. Combien y a-t-il de clients en Île-de-France ?</h4>
+                <p><strong>Procédé :</strong> Nous avons utilisé la formule <code>=NB.SI(F:F;"XX*")</code> où "XX"
+                    était remplacé par chaque numéro de département de la région (75, 77, 78, 91, 92, 93, 94, 95).
+                    Nous avons ensuite additionné tous les résultats avec la fonction =SOMME().</p>
+                <p><strong>Résultat :</strong> 6</p>
+                <p><strong>Difficultés :</strong> La méthode est répétitive et peu optimisée.
+                    Ce serait plus efficace d'avoir une colonne "Région" complète ou d'utiliser des fonctions
+                    de base de données plus avancées pour éviter de répéter la commande pour chaque département
+                    (Comme le SQL par exemple).</p>
+            </div>
+
+            <div class="question">
+                <h4>d. Donnez l'adresse et la fonction du fournisseur Andrew Wilson ?</h4>
+                <p><strong>Procédé :</strong> Nous avons effectué une recherche (CTRL + F) dans la table FOURNISSEUR
+                    sur le nom de sa société, "Baker’s Treats, Ltd.", pour trouver les informations de son contact.</p>
+                <p><strong>Résultat :</strong> Fonction : Représentant. Adresse : 29 King's Way, Manchester M14 FLP.</p>
+                <p><strong>Difficultés :</strong> Un CTRL + F est trop simple et peut causer des erreurs dès lors
+                    que la requête de recherche est erronée ou bien juste que le nom de la société ou du champ
+                    entrée par le gérer de la BD ait fait une faute d’orthographe.</p>
+            </div>
+
+            <div class="question">
+                <h4>e. Combien y a-t-il de fournisseurs en Europe ?</h4>
+                <p><strong>Procédé :</strong> Nous avons d'abord parcouru manuellement la colonne "Pays"
+                    pour dresser une liste des pays européens présents. Ensuite, nous avons utilisé la formule
+                    <code>=SI(NB.SI(liste_pays_UE;I2)>0;"Oui";"Non")</code> pour marquer chaque fournisseur. Enfin, nous avons
+                    compté le nombre de "Oui" avec <code>=NB.SI(N:N;"Oui")</code>.</p>
+                <p><strong>Résultat :</strong> 16</p>
+                <p><strong>Difficultés :</strong> La principale difficulté est la création manuelle de la liste
+                    des pays de l'UE, ce qui est source d'erreurs potentielles et n'est pas une méthode automatisable
+                    (manuel car pays en différents langages comme les Pays-Bas).</p>
+            </div>
+
+            <div class="question">
+                <h4>f. Combien y a-t-il de pays hors UE ?</h4>
+                <p><strong>Procédé :</strong> Soustraction simple à partir du total des fournisseurs (36 lignes - 1 en-tête = 35) et du résultat précédent : 35 - 16.</p>
+                <p><strong>Résultat :</strong> 19 fournisseurs sont situés hors UE.</p>
+                <p><strong>Difficultés :</strong> La fiabilité du résultat dépend entièrement de l'exactitude de la
+                    question précédente, on aurait pu faire, afin de ne pas dépendre de la question
+                    précédente <code>=NB.SI(N:N;"Oui")</code>.</p>
+            </div>
+
+            <div class="question">
+                <h4>g. Quelle est l'offre de produits (noms et catégories) de prix entre 100 et 250 euros ?</h4>
+                <p><strong>Procédé :</strong> Dans la table PRODUIT, nous avons utilisé <code>=SI(ET(F2>=100;F2&lt;=250);1;"")</code>
+                    pour marquer les produits concernés. Pour obtenir le nom de la catégorie, Nous avons utilisé une
+                    seconde commande : <code>=RECHERCHEV(C2;Categorie;2;FAUX)</code>, puis j'ai trié les résultats.</p>
+                <p><strong>Résultat :</strong> Bratislava Vodka (Boissons), Dea
+                    Surströmming (Poissons), Côte de Blaye (Boissons), Thüringer Rostbratwurst (Viandes).</p>
+                <p><strong>Difficultés :</strong> La nécessité de croiser des informations entre deux tables
+                    (PRODUIT et CATEGORIE) et de créer des colonnes temporaires rend le processus moins direct
+                    et plus flou (les tables se remplissent de commandes inutiles à la table).</p>
+            </div>
+
+            <div class="question">
+                <h4>h. Quelle est la fonction du contact du fournisseur Crème des Prés ?</h4>
+                <p><strong>Procédé :</strong> Recherche (CTRL+F) sur le nom de la société.</p>
+                <p><strong>Résultat :</strong> Représentante.</p>
+            </div>
+
+            <div class="question">
+                <h4>i. Quels produits a commandés la cliente Marie Malef ?</h4>
+                <p><strong>Procédé :</strong></p>
+                <ul>
+                    <li>Dans la table COMMANDE, identification des commandes de Marie Lefevre avec
+                        <code>=SI(RECHERCHEV(B1;Clientele;1;FAUX)="MALEF";1;"")</code> qui donne 10611, 10611 et 10611.</li>
+                    <li>Dans DETAILCOMMANDE, récupération des détails avec
+                        <code>=SI(OU($A1=10021;$A1=10134;$A1=10611);RECHERCHEV($B1;Produit;3;FAUX);"")</code>,
+                        en adaptant le numéro de colonne pour le nom et le prix.</li>
+                </ul>
+                <p><strong>Résultat :</strong></p>
+                <img src="../img/m1/i.png" alt="résultat de la question i">
+                <p><strong>Difficultés :</strong> Le principal obstacle est une incohérence de données :
+                    "Marie Malef" n'existe pas. J'ai dû faire la supposition qu'il s'agissait de "Marie Lefevre".
+                    Le processus est complexe, nécessitant de naviguer entre trois tables et de coder en dur les
+                    numéros de commande, ce qui n'est pas une méthode fiable, une erreur d’inattention peut se
+                    glisser dans le processus.</p>
+            </div>
+
+            <div class="question">
+                <h4>j. Quelle est la date de la dernière commande du client Verre à soi ?</h4>
+                <p><strong>Procédé :</strong> Dans la table COMMANDE, j'ai marqué les commandes du client avec
+                    <code>=SI(RECHERCHEV(B1;Clientele;2;FAUX)="Verre à soi";1;"")</code>, puis j'ai effectué un tri personnalisé
+                    sur cette colonne, et un second tri sur la date de commande par ordre décroissant.</p>
+                <p><strong>Résultat :</strong> 17/12/2021</p>
+                <img src="../img/m1/j.png" alt="résultat de la question j">
+                <p><strong>Difficultés :</strong> Le processus nécessite une manipulation en plusieurs étapes
+                    (formule puis tri multi-critères) au lieu d'une requête directe, une erreur encore de fatigue ou
+                    d’inattention peut se faufiler.</p>
+            </div>
+
+            <div class="question">
+                <h4>k. Donnez l'offre de produits en provenance des Pays-Bas ?</h4>
+                <p><strong>Procédé :</strong></p>
+                <ul>
+                    <li> Dans FOURNISSEUR, identification des fournisseurs avec
+                        <code>=SI(OU($I1="Nederland";$I1="Pays-Bas");1;"")</code></li>
+                    <li> Dans PRODUIT, recherche des produits liés aux N° fournisseurs trouvés (22 et 35) avec
+                        <code>=SI(OU(RECHERCHEV(B2;Fournisseur!A:A;1;FAUX)=22;RE-CHERCHEV(B2;Fournisseur!A:A;1;FAUX)=35);1;"")</code>,
+                        .</li>
+                </ul>
+                <p><strong>Résultat :</strong> </p>
+                <img src="../img/m1/k.png" alt="résultat de la question k">
+                <p><strong>Difficultés :</strong> Les différentes langues dans la saisie du nom du pays
+                    ("Pays-Bas", "Nederland") complique la requête et force l'utilisation d'une fonction OU. La méthode
+                    est indirecte et repose sur des identifiants (22, 35) qu'il a fallu récupérer manuellement.</p>
+            </div>
+
+            <div class="question">
+                <h4>l. Quelles sont les catégories de produit vendues par les fournisseurs espagnols ?</h4>
+                <p><strong>Procédé :</strong> Un processus similaire à la question précédente a été utilisé : d'abord
+                    identifier les fournisseurs espagnols, puis retrouver les catégories de leurs produits.</p>
+                <p><strong>Résultat :</strong> les catégories de produits en provenance de l'esspagne
+                    sont seulement les "Pâtes et céréales".</p>
+            </div>
+
+            <div class="question">
+                <h4>m. Est-ce qu'il y a des clients qui n'ont pas passé de commande ?</h4>
+                <p><strong>Procédé :</strong> Dans la table CLIENTELE, j'ai utilisé la formule <code>=SI(NB.SI(Commande!B:B;A1)>0;"O";"X")</code> pour vérifier si chaque Code client existe dans la table des commandes.</p>
+                <p><strong>Résultat :</strong> Oui, plusieurs clients (marqués par un X dans notre analyse).</p>
+                <img src="../img/m1/m.png" alt="résultat de la question m">
+                <p><strong>Difficultés :</strong> Aucune car cette fois ci la méthode est efficace pour ce
+                    type de vérification sur Excel.</p>
+            </div>
+        </div>
+
+        <div class="rapport">
+            <h3>3. Évaluation de la qualité des données</h3>
+            <p>L'analyse a révélé plusieurs problèmes critiques :</p>
+            <ul>
+                <li><strong>Incohérences :</strong> Fautes de frappe (ex: "Lillle", "Besancon") créant des doublons.</li>
+                <li><strong>Données manquantes :</strong> Champs vides (Région) ou invalides (Téléphone).</li>
+                <li><strong>Structure :</strong> Absence de suivi client (réclamations) et de statut de commande clair (attente/livrée).</li>
+            </ul>
+
+            <h3>4. Propositions d'amélioration</h3>
+            <p>Pour corriger ces défauts et moderniser la base KDou, nous proposons :</p>
+            <ul>
+                <li>
+                    <strong>Standardisation :</strong> Créer une table <em>Ville</em> pour éviter les erreurs de saisie.
+                </li>
+                <li>
+                    <strong>Suivi Client :</strong> Ajouter une table <em>SuiviClient</em> (interaction, réclamation, employé concerné).
+                </li>
+                <li>
+                    <strong>Suivi Commande :</strong> Ajouter un champ <em>Statut</em>.
+                </li>
+                <li>
+                    <strong>Dimension Écologique :</strong>
+                    <ul>
+                        <li>Ajout d'un <em>Score Écologique</em> (A à E) dans la table PRODUIT.</li>
+                        <li>Indicateur <em>Origine Locale</em> et certification Bio pour les fournisseurs.</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>SAÉ 1.04 WEB - Groupe Y.M.A.B. - 2025</p>
+    </footer>
+</body>
+</html>

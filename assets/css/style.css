@@ -1,0 +1,232 @@
+:root {
+    --bg-color: #d9f1d3;
+    --h1-color: #9EC383;
+    --nav-text-color: #1C2C11;
+    --accent-color: #3A5328;
+    --border-color: #9EC383;
+    --hover-color: #6A9749;
+    --nav-bg: #1C2C11;
+    --nav-text: #d9f1d3;
+    --nav-active-bg: #6A9749;
+    --nav-active-text: #1C2C11;
+    --td-color: #c8e3ba;
+    --question-color : #f5ffeb;
+    --code-color : #eef5e9;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding-top: 135px;
+    background-color: var(--bg-color);
+    font-family: Verdana, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+main {
+    flex: 1;
+    width: 90%;
+    margin: auto;
+}
+.navigation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 135px;
+    background-color: var(--nav-bg);
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 5px 10px;
+    opacity: 95%;
+    z-index: 999;
+}
+
+
+
+.navigation h1 {
+    color: var(--h1-color);
+    margin-bottom: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    height: 15px;
+}
+
+.boutons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    flex-wrap: wrap;
+
+    a{
+        color: var(--nav-text);
+        padding: 10px 15px;
+        margin: 15px;
+        background-color: var(--nav-bg);
+        text-decoration: none;
+        border-radius: 9px;
+        box-shadow: 0 1px 2px;
+        outline: black;
+        font-weight: bold;
+        transition: 0.3s ease;
+        display: inline-block;
+
+    }
+
+    a:hover {
+        background-color: var(--hover-color);
+        color: var(--nav-active-text);
+        font-weight: bolder;
+        transition: 0.3s ease;
+        scale: 110%;
+    }
+
+    #actif{
+        color : gray;
+        box-shadow: 0 0 0;
+    }
+
+    #actif:hover{
+        background-color: var(--nav-bg);
+        font-weight: bold;
+        box-shadow: 0 0 0;
+        scale: 100%;
+    }
+}
+
+
+
+#titre {
+    text-align: center;
+    font-size: 3rem;
+}
+
+main > div {
+    margin: 50px auto;
+}
+
+main > div p {
+    font-size: 1.1rem;
+}
+
+#tab {
+    text-align: center;
+}
+
+.container {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 5px 10px;
+    margin: 0 auto;
+
+    thead {
+        background-color: var(--hover-color);
+        th {
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            text-align: center;
+            color: black;
+        }
+    }
+
+    tbody {
+        background-color: var(--td-color);
+
+        tr {
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        td {
+        border: 1px solid var(--border-color);
+        padding: 15px;
+        text-align: center;
+            a{
+                color: black;
+            }
+        }
+
+        tr:hover {
+            background-color: var(--hover-color);
+        }
+    }
+    caption {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+}
+
+
+footer{
+    position: relative;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background-color: var(--hover-color);
+    padding: 15px;
+    text-align: center;
+}
+
+@media (max-width: 900px) {
+    .navigation {
+        height: auto;
+
+    }
+    .navigation h1 {
+        font-size: 1rem;
+    }
+
+    .boutons {
+        flex-direction: column;
+        gap: 5px;
+        padding: 0;
+        margin: 0;
+    }
+    .boutons a{
+        width: 85%;
+        margin: 0;
+        padding: 5px;
+    }
+
+    body {
+        padding-top: 200px;
+    }
+
+    .container {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        th, td {
+            font-size: 0.8rem;
+            padding: 6px 4px;
+            word-break: break-word;
+            white-space: normal;
+        }
+    }
+}
+
+@media (max-width: 600px) {
+    .navigation h1 {
+        font-size: 1.3rem;
+    }
+    .boutons a {
+        font-size: 0.9rem;
+        padding: 5px;
+    }
+    body {
+        padding-top: 200px;
+    }
+    .container {
+        width: 100%;
+        margin: 0 auto;
+    }
+}
+

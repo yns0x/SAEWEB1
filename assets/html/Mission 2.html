@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mission.css">
+    <link rel="icon" href="../img/favicon.jpg">
+    <title>Rapport SAE-Web</title>
+</head>
+<body>
+<header class="navigation">
+    <h1>Rapport Web De SAE</h1>
+    <nav class="boutons">
+        <a href="../../index.html">Acceuil</a>
+        <a href="Mission%201.html">Mission 1</a>
+        <a id="actif" href="#">Mission 2</a>
+        <a href="Mission%203.html">Mission 3</a>
+        <a href="Conclusion.html">Conclusion</a>
+    </nav>
+</header>
+
+<main>
+    <h2 id="titre">Mission 2 : Exploitation de la base KDou</h2>
+
+    <div class="rapport">
+        <h3>1. Contexte de la mission 2</h3>
+        <p>
+            Dans cette mission, nous avons exploité la base de données KDou à l’aide d’un outil
+            « low-code » (interface graphique et générateur de requêtes) afin de répondre à des
+            questions précises sur les clients, les fournisseurs et les produits.
+        </p>
+        <p>
+            L’objectif était de formuler des besoins métiers en langage naturel, puis de les
+            traduire en requêtes SQL et d’interpréter les résultats pour aider KDou à mieux
+            piloter son activité.
+        </p>
+    </div>
+
+    <div class="rapport">
+        <h3>2. Indicateurs retenus</h3>
+        <div class="question">
+            <h4>Indicateur 1 – Coordonnées des clients parisiens</h4>
+            <p><strong>Énoncé :</strong> On veut vérifier les coordonnées des clients parisiens, en donner une liste triée par société.</p>
+            <p>
+                <strong>Intérêt pour KDou :</strong>
+                Cet indicateur permet à KDou de cibler plus facilement ses clients situés à Paris,
+                ce qui est utile pour organiser les tournées de livraison, planifier des actions
+                commerciales locales ou encore analyser la concentration de la clientèle dans la
+                capitale.
+            </p>
+            <p><strong>Requête SQL :</strong></p>
+            <code>
+                SELECT *<br>
+                FROM Clientele<br>
+                WHERE Ville = "Paris"<br>
+                ORDER BY Societe;
+            </code>
+            <p><strong>Résultat (extrait) :</strong></p>
+            <img src="../img/m2/b.png" alt="Résultat de la requête sur les clients parisiens">
+        </div>
+
+        <div class="question">
+            <h4>Indicateur 2 – Clients sans commande</h4>
+            <p><strong>Énoncé :</strong> Quels sont les clients qui n'ont pas encore passé de commandes (code, société et mail) ?</p>
+            <p>
+                <strong>Intérêt pour KDou :</strong>
+                Cet indicateur met en évidence les clients inactifs. KDou peut ainsi décider de
+                lancer des campagnes de relance (promotions, mails personnalisés) ou de mettre
+                à jour sa base comme la suppression d’anciens comptes pour garder des données
+                à jour.
+            </p>
+            <p><strong>Requête SQL :</strong></p>
+            <code>
+                SELECT Clientele.CodeCli, Clientele.Societe, Clientele.MailCli<br>
+                FROM Clientele LEFT JOIN Commande<br>
+                ON Clientele.CodeCli = Commande.CodeCli<br>
+                WHERE Commande.CodeCli IS NULL;
+            </code>
+            <p><strong>Résultat (extrait) :</strong></p>
+            <img src="../img/m2/g.png" alt="Résultat de la requête sur les clients sans commande">
+        </div>
+
+        <div class="question">
+            <h4>Indicateur 3 – Catégories de produits vendues par les fournisseurs américains</h4>
+            <p><strong>Énoncé :</strong> Quelles sont les catégories de produit vendues par les fournisseurs américains ?</p>
+            <p>
+                <strong>Intérêt pour KDou :</strong>
+                Cet indicateur aide KDou à analyser la part de son offre qui dépend de fournisseurs
+                basés aux États-Unis. Cela permet de mieux évaluer les risques liés aux importations
+                (taux de change, délais, coûts de transport) et d’orienter la stratégie d’achats
+                ou de diversification des fournisseurs.
+            </p>
+            <p><strong>Requête SQL :</strong></p>
+            <code>
+                SELECT DISTINCT Categorie.NomCateg, Produit.CodeCateg, Fournisseur.Pays<br>
+                FROM Fournisseur INNER JOIN<br>
+                (Categorie INNER JOIN Produit<br>
+                ON Categorie.CodeCateg = Produit.CodeCateg)<br>
+                ON Fournisseur.NoFour = Produit.NoFour<br>
+                WHERE Fournisseur.Pays = "U.S.A." OR Fournisseur.Pays = "Etats-Unis";
+            </code>
+            <p><strong>Résultat (extrait) :</strong></p>
+            <img src="../img/m2/h.png" alt="Résultat de la requête sur les catégories vendues par les fournisseurs américains">
+        </div>
+
+        <div class="question">
+            <h4>Indicateur 4 – Couples de clients parisiens pour optimiser les livraisons</h4>
+            <p><strong>Énoncé :</strong> Pour optimiser les livraisons, on regarde quels couples de clients sont à Paris. Lister les possibilités avec pour chacun code, société et mail.</p>
+            <p>
+                <strong>Intérêt pour KDou :</strong>
+                Cet indicateur permet de repérer des paires de clients proches géographiquement
+                (même ville) et de mieux organiser les tournées de livraison. KDou peut ainsi
+                réduire les coûts de transport et le temps de trajet en regroupant certaines
+                livraisons.
+            </p>
+            <p><strong>Requête SQL :</strong></p>
+            <code>
+                SELECT C1.CodeCli, C1.Societe, C1.MailCli,<br>
+                C2.CodeCli, C2.Societe, C2.MailCli<br>
+                FROM Clientele AS C1 INNER JOIN Clientele AS C2<br>
+                ON C1.CodeCli &lt; C2.CodeCli<br>
+                WHERE C1.Ville = "Paris" AND C2.Ville = "Paris"<br>
+                ORDER BY C1.CodeCli;
+            </code>
+            <p><strong>Résultat (extrait) :</strong></p>
+            <img src="../img/m2/l.png" alt="Résultat de la requête sur les couples de clients parisiens">
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>SAÉ 1.04 WEB - Groupe Y.M.A.B. - 2025</p>
+</footer>
+</body>
+</html>

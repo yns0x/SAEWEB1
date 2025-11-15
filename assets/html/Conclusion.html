@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mission.css">
+    <link rel="icon" href="../img/favicon.jpg">
+    <title>Rapport SAE-Web – Conclusion</title>
+</head>
+<body>
+<header class="navigation">
+    <h1>Rapport Web De SAE</h1>
+    <nav class="boutons">
+        <a href="../../index.html">Acceuil</a>
+        <a href="Mission%201.html">Mission 1</a>
+        <a href="Mission%202.html">Mission 2</a>
+        <a href="Mission%203.html">Mission 3</a>
+        <a id="actif" href="#">Conclusion</a>
+    </nav>
+</header>
+
+<main>
+    <h2 id="titre">Conclusion</h2>
+
+    <div class="rapport">
+        <h3>1. Bilan pour l’entreprise KDou</h3>
+        <p>
+            L’ensemble des trois missions réalisées autour de la base de données KDou nous a permis
+            de mieux comprendre le fonctionnement de l’entreprise et les limites de ses données
+            initiales. La première mission a mis en évidence la structure de la base, les rôles des
+            différentes tables et plusieurs problèmes de qualité (doublons, incohérences de saisie,
+            données manquantes).
+        </p>
+        <p>
+            Les missions 2 et 3 ont montré que, à partir d’une base correctement structurée,
+            il est possible de produire des <strong>indicateurs de pilotage</strong> pertinents : chiffre
+            d’affaires par catégories (notamment desserts et boissons), produits carnés non
+            commandés, importance des fournisseurs hors UE, répartition géographique des
+            produits, fonctionnement du réseau de clients pilotes et partenaires, ou encore
+            identification des clients les plus actifs.
+        </p>
+        <p>
+            Ces indicateurs donnent à KDou une vision plus claire de :
+        </p>
+        <ul>
+            <li>La structure de son chiffre d’affaires et des catégories de produits stratégiques.</li>
+            <li>Les références à faible intérêt commercial à retravailler ou supprimer.</li>
+            <li>La dépendance vis-à-vis de certains pays ou fournisseurs hors UE.</li>
+            <li>La dynamique de sa clientèle (clients fidèles, inactifs, réseaux de partenaires).</li>
+        </ul>
+        <p>
+            En résumé, l’analyse menée offre à KDou une base solide pour prendre des décisions
+            éclairées : optimiser son catalogue, cibler ses actions commerciales et mieux organiser
+            ses approvisionnements et livraisons.
+        </p>
+    </div>
+
+    <div class="rapport">
+        <h3>2. Bilan sur les outils utilisés (Excel, Access QBE / SQL)</h3>
+        <p>
+            Au cours de la SAE, nous avons utilisé plusieurs outils complémentaires : <strong>Excel</strong>,
+            <strong>Access en mode QBE</strong> et le langage <strong>SQL</strong>.
+        </p>
+        <p>
+            <strong>Excel</strong> s’est révélé très utile pour une première exploration des données :
+            filtrage, tri, calculs rapides (par exemple avec des fonctions comme <code>NB.SI</code>),
+            mise en forme de tableaux et détection de certaines incohérences. En revanche, il atteint
+            vite ses limites lorsqu’il s’agit de gérer plusieurs tables liées et de maintenir la cohérence
+            des données sur le long terme.
+        </p>
+        <p>
+            <strong>Access en mode QBE</strong> (interface graphique de requêtes) permet de construire
+            des requêtes de manière visuelle, en sélectionnant les tables et les champs. Cet outil est
+            pratique pour débuter, tester des jointures et comprendre la logique des requêtes, mais il
+            cache parfois la complexité réelle et rend difficile la réutilisation des requêtes en dehors
+            d’Access.
+        </p>
+        <p>
+            Enfin, le langage <strong>SQL</strong> est apparu comme l’outil le plus puissant et le plus
+            précis pour interroger la base KDou, en particulier dans la nouvelle version de la base
+            avec les pays, le coût d’achat, la marge ou les relations pilotes/partenaires. Il permet
+            d’exprimer clairement les besoins métiers (agrégations, regroupements, filtres) et de
+            produire des requêtes réutilisables et portables.
+        </p>
+        <p>
+            Cette SAE nous a donc appris que la qualité des données et le choix des outils
+            d’analyse sont essentiels pour obtenir des indicateurs fiables. Excel est adapté aux
+            vérifications rapides, Access QBE facilite la prise en main des requêtes, et SQL reste
+            indispensable pour une exploitation rigoureuse et complète d’une base de données
+            relationnelle comme celle de KDou.
+        </p>
+    </div>
+    <div class="rapport">
+        <h3>3. Bilan sur la réalisation du rapport Web (R1.02)</h3>
+        <p>
+            Pour la partie développement Web, nous avons choisi de réaliser un site simple et clair,
+            uniquement en HTML5 et CSS, sans utiliser de framework ni de générateur automatique, afin
+            de respecter les consignes du projet.
+        </p>
+        <p>
+            Nous avons défini une charte graphique commune pour toutes les pages (couleurs, police,
+            mise en forme des titres et des tableaux) et mis en place une barre de navigation fixe en
+            haut de page pour faciliter l’accès aux différentes missions. Le positionnement des éléments
+            a été réalisé principalement avec <strong>flexbox</strong>, et nous avons utilisé des
+            <strong>media-queries</strong> pour adapter l’affichage lorsque la fenêtre devient plus petite.
+        </p>
+        <p>
+            Nous avons également structuré les fichiers en plusieurs dossiers
+            (<code>assets/html</code>, <code>assets/css</code>, <code>assets/img</code>) afin de séparer le contenu,
+            la présentation et les ressources. Cette organisation simplifie la maintenance du site et
+            permet de réutiliser la même feuille de style pour toutes les pages.
+        </p>
+        <p>
+            Enfin, la réalisation de ce rapport Web nous a permis de mettre en pratique les notions
+            vues en R1.02 : sémantique HTML, utilisation des tableaux et des listes, gestion d’une
+            navigation multi-pages, création d’un pied de page et prise en compte de la responsivité.
+            Nous avons également rencontré quelques difficultés (chemins relatifs, menu fixe, gestion
+            du footer), qui nous ont aidés à mieux comprendre le fonctionnement du modèle de boîte
+            et du positionnement en CSS.
+        </p>
+    </div>
+
+</main>
+
+<footer>
+    <p>SAÉ 1.04 WEB - Groupe Y.M.A.B. - 2025</p>
+</footer>
+</body>
+</html>

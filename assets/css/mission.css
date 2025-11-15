@@ -1,0 +1,90 @@
+.rapport {
+    margin: 40px auto;
+    max-width: 1100px;
+    padding: 0 20px;
+
+    h3 {
+        color: var(--accent-color);
+        border-bottom: 5px solid var(--border-color);
+        text-transform: uppercase;
+    }
+}
+
+.question {
+    background-color: var(--question-color);
+    padding: 20px;
+    margin: 10px auto;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border-radius: 8px;
+    scale: 100%;
+    transition: 0.3s ease;
+
+
+    h4 {
+        margin-top: 0;
+        color: var(--nav-bg);
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+
+}
+
+.question:hover {
+    scale: 105%;
+    transition: 0.3s ease;
+    background-color: white;
+}
+
+code {
+    background-color: var(--code-color);
+    border: 1px solid var(--border-color);
+    padding: 3px 6px;
+    border-radius: 5px;
+    color: var(--accent-color);
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    display: inline-block;
+    max-width: 100%;
+    vertical-align: middle;
+    overflow-x: auto; /* J'ai rechercher cet attribut car le texte présent dans code lors du changement de format de la
+                         fenêtre dépassait du bloc, maintenant il fait un menu déroulant quand c'est trop petit. */
+}
+
+@media (max-width: 900px) {
+    .rapport{
+        padding: 10px;
+        max-width: 900px;
+
+    }
+    .question{
+        margin: 0;
+        gap: 0;
+        scale: 90%;
+        transition: 0s;
+    }
+    .question:hover {
+        transition: 0s;
+        scale: 90%;
+    }
+}
+
+@media (max-width: 600px) {
+    .rapport{
+        padding: 5px;
+        max-width: 600px;
+
+    }
+
+    .question{
+        gap: 0;
+        scale: 90%;
+        transition: 0s;
+    }
+
+}
